@@ -9,14 +9,19 @@ export async function POST(req, { params }) {
   const { action } = await params;
   
   if (action === 'register') {
-    const { username, email, password } = await req.json();
-    const existing = await executeQueryArrayMode(`SELECT email FROM users WHERE email = $1`, [email]);
-    if (existing && existing.length > 0) return StandardResponse("error", {}, "Email already exists", 400);
+    try {
+      const { username, email, password } = await req.json();
+      const existing = await executeQueryArrayMode(`SELECT email FROM users WHERE email = $1`, [email]);
+      if (existing && existing.length > 0) return StandardResponse("error", {}, "Email already exists", 400);
 
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
-    await executeQuery(`INSERT INTO users (username, email, password_hash, is_active) VALUES ($1, $2, $3, TRUE)`, [username, email, hash]);
-    return StandardResponse("success", {}, "User registered successfully");
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(password, salt);
+      await executeQuery(`INSERT INTO users (username, email, password_hash, is_active) VALUES ($1, $2, $3, TRUE)`, [username, email, hash]);
+      return StandardResponse("success", {}, "User registered successfully");
+    } catch (err) {
+      console.error("Register error:", err);
+      return StandardResponse("error", {}, "Registration failed: " + err.message, 500);
+    }
   }
 
   if (action === 'login') {
