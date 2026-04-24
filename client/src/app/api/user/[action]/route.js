@@ -13,7 +13,7 @@ export async function POST(req, { params }) {
 
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
-    await executeQuery(`INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)`, [username, email, hash]);
+    await executeQuery(`INSERT INTO users (username, email, password_hash, is_active) VALUES ($1, $2, $3, TRUE)`, [username, email, hash]);
     return StandardResponse("success", {}, "User registered successfully");
   }
 
