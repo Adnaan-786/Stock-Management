@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { executeQueryArrayMode, executeQuery, StandardResponse } from '@/lib/db';

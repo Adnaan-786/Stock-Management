@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+
 import { executeQuery, StandardResponse } from '@/lib/db';
 import { extractUser } from '@/lib/auth';
 
